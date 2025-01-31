@@ -1,0 +1,17 @@
+- name: Установить Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Копировать конфигурацию Nginx
+  copy:
+    src: files/nginx.conf
+    dest: /etc/nginx/nginx.conf
+    mode: '0644'
+  notify: Перезапустить Nginx
+
+- name: Запустить Nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes

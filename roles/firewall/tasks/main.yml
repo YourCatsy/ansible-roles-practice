@@ -1,0 +1,24 @@
+- name: Разрешить HTTP и HTTPS
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - "80"
+    - "443"
+
+- name: Разрешить MySQL
+  ufw:
+    rule: allow
+    port: "3306"
+    proto: tcp
+
+- name: Разрешить SSH
+  ufw:
+    rule: allow
+    port: "22"
+    proto: tcp
+
+- name: Включить UFW
+  ufw:
+    state: enabled

@@ -1,0 +1,8 @@
+- name: Настройка веб-сервера
+  hosts: web_servers
+  become: yes
+  roles:
+    - nginx
+    - mysql
+    - docker
+    - firewall
