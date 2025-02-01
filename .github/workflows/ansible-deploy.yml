@@ -21,28 +21,18 @@ jobs:
       - name: Установить SSH-ключ
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/server_ssh.pem
+          chmod 600 ~/.ssh/server_ssh.pem
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           eval $(ssh-agent -s)
-          ssh-add ~/.ssh/id_rsa
+          ssh-add ~/.ssh/server_ssh.pem
 
       - name: Добавление ключа сервера в known_hosts
         run: |
           ssh-keyscan -H 54.145.135.174 >> ~/.ssh/known_hosts
-          ansible-playbook -i hosts.ini -u ubuntu --private-key ~/.ssh/id_rsa site.yml
-
-
-
-
-
-
-
-
-
-
-
-
+          
+          # Выполнение playbook'а
+          ansible-playbook -i hosts.ini -u ubuntu --private-key ~/.ssh/server_ssh.pem site.yml
 
 
 
