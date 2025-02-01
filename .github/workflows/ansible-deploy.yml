@@ -31,7 +31,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@54.145.135.174 << 'EOF'
             set -e  # Остановить выполнение при ошибке
-
+            
             REPO_DIR="/home/ubuntu/myproject"
 
             # Добавляем ключ GitHub на сервер, чтобы избежать ошибки Host key verification failed
@@ -60,3 +60,4 @@ jobs:
             git pull
             docker-compose up -d
           EOF
+
