@@ -28,9 +28,5 @@ jobs:
           ssh-add ~/.ssh/id_rsa
 
       - name: Запуск Ansible Playbook
-        run: |
-          # Переменная для IP адреса вашего сервера
-          SERVER_IP="54.145.135.174"
-          
-          # Выполнение playbook'а
-          ansible-playbook -i $SERVER_IP, -u ubuntu --private-key ~/.ssh/id_rsa site.yml
+        run: ansible-playbook -i hosts.ini site.yml 
+
