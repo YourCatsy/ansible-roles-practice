@@ -1,6 +1,10 @@
 - name: Настройка веб-сервера
-  hosts: web_servers
+  hosts: web
   become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  vars_files:
+    - roles/mysql/group_vars/web_servers.yml 
   roles:
     - nginx
     - mysql

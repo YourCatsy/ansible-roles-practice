@@ -1,3 +1,14 @@
+- name: Установить pip3
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Установить PyMySQL
+  pip:
+    name: PyMySQL
+    state: present
+    executable: /usr/bin/pip3
+
 - name: Установить MySQL
   apt:
     name: mysql-server
@@ -13,6 +24,8 @@
   mysql_user:
     name: root
     password: "{{ mysql_root_password }}"
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    login_host: localhost
     priv: '*.*:ALL,GRANT'
     state: present
