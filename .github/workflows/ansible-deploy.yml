@@ -3,7 +3,7 @@ name: Deploy with Ansible
 on:
   push:
     branches:
-      - main  # Запускать при пуше в ветку main
+      - main  
 
 jobs:
   deploy:
@@ -27,6 +27,24 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/id_rsa
 
-      - name: Запуск Ansible Playbook
-        run: ansible-playbook -i hosts.ini site.yml 
+      - name: Добавление ключа сервера в known_hosts
+        run: |
+          ssh-keyscan -H 54.145.135.174 >> ~/.ssh/known_hosts
+          ansible-playbook -i hosts.ini -u ubuntu --private-key ~/.ssh/id_rsa site.yml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
