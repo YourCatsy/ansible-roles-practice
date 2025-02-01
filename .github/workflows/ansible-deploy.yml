@@ -18,19 +18,12 @@ jobs:
           sudo apt update
           sudo apt install -y ansible
 
-      - name: Проверка синтаксиса Playbook (Lint)
-        run: |
-          pip install ansible-lint
-          ansible-lint site.yml
-
-      - name: Подключение к серверу и запуск Playbook
-        env:
-          ANSIBLE_HOST: ${{ secrets.ANSIBLE_HOST }}   
-          ANSIBLE_USER: ${{ secrets.ANSIBLE_USER }}    
-          ANSIBLE_SSH_KEY: ${{ secrets.ANSIBLE_SSH_KEY }} 
+      - name: Установить SSH-ключ
         run: |
           mkdir -p ~/.ssh
-          echo "$ANSIBLE_SSH_KEY" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H $ANSIBLE_HOST >> ~/.ssh/known_hosts
-          ansible-playbook -i "$ANSIBLE_HOST," -u "$ANSIBLE_USER" --private-key ~/.ssh/id_rsa site.yml
+
+      - name: Подключение к серверу и деплой
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@54.145.135.174 "cd /путь/к/проекту && git pull && docker-compose up -d"
