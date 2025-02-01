@@ -32,11 +32,4 @@ jobs:
           ssh-keyscan -H 54.145.135.174 >> ~/.ssh/known_hosts
           
       - name: Запуск Ansible playbook
-        run: |
-          # Выполнение playbook'а
-          ansible-playbook -i hosts.ini -u ubuntu --private-key ~/.ssh/server_ssh.pem site.yml || {
-            echo "Playbook execution failed, checking Nginx status and logs";
-            ssh -i ~/.ssh/server_ssh.pem ubuntu@54.145.135.174 "sudo systemctl status nginx.service";
-            ssh -i ~/.ssh/server_ssh.pem ubuntu@54.145.135.174 "sudo journalctl -xeu nginx.service";
-            exit 1;
-          }
+        run: ansible-playbook -i hosts.ini -u ubuntu --private-key ~/.ssh/server_ssh.pem site.yml 
