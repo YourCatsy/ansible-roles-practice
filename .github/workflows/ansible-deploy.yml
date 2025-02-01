@@ -23,14 +23,38 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H 54.145.135.174 >> ~/.ssh/known_hosts
 
       - name: Подключение к серверу и деплой
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@54.145.135.174 << 'EOF'
+          ssh -i ~/.ssh/id_rsa ubuntu@54.145.135.174 << 'EOF'
+            set -e  # Остановить выполнение при ошибке
+
             REPO_DIR="/home/ubuntu/myproject"
+
+            # Добавляем ключ GitHub на сервер, чтобы избежать ошибки Host key verification failed
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+            # Проверяем, установлен ли Docker и Docker Compose
+            if ! command -v docker &> /dev/null; then
+              echo "Docker не найден. Устанавливаю..."
+              sudo apt update
+              sudo apt install -y docker.io
+              sudo systemctl enable --now docker
+            fi
+
+            if ! command -v docker-compose &> /dev/null; then
+              echo "Docker Compose не найден. Устанавливаю..."
+              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            fi
+
+            # Если репозитория нет - клонируем
             if [ ! -d "$REPO_DIR/.git" ]; then
               git clone git@github.com:YourCatsy/ansible-roles-practise.git $REPO_DIR
             fi
+
             cd $REPO_DIR
             git pull
             docker-compose up -d
